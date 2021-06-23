@@ -12,14 +12,12 @@ html::after {
 header {
     text-align: center;
     height: 100px;
-    background-color: #204051;
+    background-color: #000;
     margin-bottom: 70px;
 }
 header h1 {
     line-height: 100px;
-    color: #e7dfd5;
-        border-width: 5px;
-        border: dashed blue;
+    color: white;
 }
 main img {
     width: calc(740px / 3);
