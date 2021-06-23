@@ -1,6 +1,5 @@
 html::after {
     content: "";
-    background: url(https://www.toptal.com/designers/subtlepatterns/patterns/double-bubble.png);
     opacity: 0.3;
     top: 0;
     left: 0;
