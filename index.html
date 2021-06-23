@@ -1,35 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Bus-Mall</title>
+    <link rel="stylesheet" href="./css/reset.css">
     <link rel="stylesheet" href="./css/style.css">
 </head>
-<body>
 
+<section class="container">
+<body>
     <header>
-        <h1>Product Picker</h1>
+        <h1>Bus Mall</h1>
     </header>
 
     <main>
-        <input type="number" id="txtCounter" value="25">
-        <div id="all_product">
-            <img src="" alt="" id="left_img">
-            <img src="" alt="" id="center_img">
-            <img src="" alt="" id="right_img">
-        </div>
+        <section class="imgSection">
+            <img src="" alt="" id="firstPic">
+            <img src="" alt="" id="secondPic">
+            <img src="" alt="" id="thirdPic">
+        </section>
+
+
+
+        <canvas id="myChart"></canvas>
+
+            <ol id="ol">
+                
+            </ol>
+            
+
+            <button id="button">View Results</button>
+        </main>
+        
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
     
-        <ul id="finalResult"></ul>  
-        <canvas id="myChart" width="400" height="400"></canvas>  
-
-        <p id="GFG_UP" style="font-size: 15px; font-weight: bold;"> </p> 
-
-    </main>
-
-    <footer>
-
-    </footer>
-    <script src="./js/app.js"></script>
+<script src="./js/app.js"></script>
 </body>
+
 </html>

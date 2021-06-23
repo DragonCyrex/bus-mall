@@ -1,235 +1,190 @@
-'use-strict';
 
-var productSection = document.getElementById('all_product');
-var leftImage = document.getElementById('left_img');
-var centerImage = document.getElementById('center_img');
-var rightImage = document.getElementById('right_img');
+'use strict';
 
-var allProduct = [];
-var totalClicks = 0;
+let productArray = [
+  'bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg',
+  'bubblegum.jpg', 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg', 'pen.jpg', 'pet-sweep.jpg',
+  'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg', 'unicorn.jpg', 'usb.gif', 'water-can.jpg', 'wine-glass.jpg'
+];
 
-var currentLeftImage;
-var currentRightImage;
-var currentcenterImage;
+const firstPic = document.getElementById( 'firstPic' );
+const secondPic = document.getElementById( 'secondPic' );
+const thirdPic = document.getElementById( 'thirdPic' );
+const button = document.getElementById( 'button' );
 
-var previousLeftImageIndex;
-var previousMiddelImageIndex;
-var previousrightImageIndex;
+let leftPIndex = 0;
+let midPIndex = 0;
+let lastPIndex = 0;
+const clickCounter = 25;
 
-var productName = [];
-
-function Product(name, url) {
+function Product( name ,image ) {
   this.name = name;
-  this.url = url;
-  this.numberOfClicks = 0;
-  this.timeShown = 0;
-  allProduct.push(this);
-  productName.push(this.name);
+  this.image = `./img/${image}`;
+  this.clicks = 0;
+  this.shown = 0;
+  Product.all.push( this );
 }
 
-new Product('Bag', './img/bag.jpg');
-new Product('Banana', './img/banana.jpg');
-new Product('Bathroom', './img/bathroom.jpg');
-new Product('Boots', './img/boots.jpg');
-new Product('Breakfast', './img/breakfast.jpg');
-new Product('Bubblegum', './img/bubblegum.jpg');
-new Product('Chair', './img/chair.jpg');
-new Product('Cthulhu', './img/cthulhu.jpg');
-new Product('Dog duck', './img/dog-duck.jpg');
-new Product('Dragon', './img/dragon.jpg');
-new Product('Pen', './img/pen.jpg');
-new Product('Pet sweep', './img/pet-sweep.jpg');
-new Product('Scissors', './img/scissors.jpg');
-new Product('Sweep', './img/sweep.png');
-new Product('Tauntaun', './img/tauntaun.jpg');
-new Product('Shark', './img/shark.jpg');
-new Product('Unicorn', './img/unicorn.jpg');
-new Product('Usb', './img/usb.gif');
-new Product('Water can', './img/water-can.jpg');
-new Product('Wine glass', './img/wine-glass.jpg');
+Product.all = [];
+Product.counter = 0;
 
-function pickImages() {
-  var imageBox = [];
-
-  if (totalClicks > 0) {
-    imageBox = [
-      previousLeftImageIndex,
-      previousMiddelImageIndex,
-      previousrightImageIndex,
-    ];
-  }
-
-  var leftIndex = generateRandomNumber(imageBox);
-  imageBox.push(leftIndex);
-  var centerIndex = generateRandomNumber(imageBox);
-  imageBox.push(centerIndex);
-  var rightIndex = generateRandomNumber(imageBox);
-
-  previousLeftImageIndex = leftIndex;
-  previousMiddelImageIndex = centerIndex;
-  previousrightImageIndex = rightIndex;
-
-  leftImage.setAttribute('src', allProduct[leftIndex].url);
-  centerImage.setAttribute('src', allProduct[centerIndex].url);
-  rightImage.setAttribute('src', allProduct[rightIndex].url);
-
-  currentLeftImage = allProduct[leftIndex];
-  currentRightImage = allProduct[rightIndex];
-  currentcenterImage = allProduct[centerIndex];
-
-  currentLeftImage.timeShown = Number(
-    localStorage.getItem(currentLeftImage.name + '_timeOfShown')
-  );
-  currentLeftImage.timeShown += 1;
-  localStorage.setItem(
-    currentLeftImage.name + '_timeOfShown',
-    currentLeftImage.timeShown
-  );
-
-  currentcenterImage.timeShown = Number(
-    localStorage.getItem(currentcenterImage.name + '_timeOfShown')
-  );
-  currentcenterImage.timeShown += 1;
-  localStorage.setItem(
-    currentcenterImage.name + '_timeOfShown',
-    currentcenterImage.timeShown
-  );
-
-  currentRightImage.timeShown = Number(
-    localStorage.getItem(currentRightImage.name + '_timeOfShown')
-  );
-  currentRightImage.timeShown += 1;
-  localStorage.setItem(
-    currentRightImage.name + '_timeOfShown',
-    currentRightImage.timeShown
-  );
+function getName( fileName ) {
+  return fileName.split( '.' ).slice( 0, -1 ).join( '.' );
 }
 
-function generateRandomNumber(imageBox) {
-  var random;
-  var allowed;
+
+for( let i = 0; i < productArray.length; i++ ) {
+  new Product( getName( productArray[i] ), productArray[i] );
+
+
+}
+
+let indexs = [];
+
+function renderNewProduct() {
+
+  let index = randomNumber( 0, Product.all.length - 1 );
+
+  firstPic.src = Product.all[index].image;
+  firstPic.alt = Product.all[index].name;
+  leftPIndex = index;
+  indexs.push( index );
+  let rightIndex;
   do {
-    random = Math.floor(Math.random() * allProduct.length);
-    allowed = true;
+    rightIndex = randomNumber( 0, Product.all.length - 1 );
+  } while( index === rightIndex );
+  indexs.push( rightIndex );
 
-    for (var i = 0; i < imageBox.length; i++) {
-      if (imageBox[i] === random) {
-        allowed = false;
-      }
-    }
-  } while (!allowed);
+  secondPic.src = Product.all[rightIndex].image;
+  secondPic.alt = Product.all[rightIndex].name;
+  midPIndex = rightIndex;
+  let lastIndex;
+  do{
+    lastIndex = randomNumber( 0,Product.all.length - 1 );
+  }while( index === lastIndex || rightIndex === lastIndex );
+  indexs.push( lastIndex );
 
-  return random;
+  thirdPic.src = Product.all[lastIndex].image;
+  thirdPic.alt = Product.all[lastIndex].name;
+  lastPIndex = lastIndex;
+
+  Product.all[index].shown++;
+  Product.all[rightIndex].shown++;
+  Product.all[lastIndex].shown++;
+
 }
 
-pickImages();
 
-productSection.addEventListener('click', handleClick);
+function handelClick( event ) {
 
-function handleClick(event) {
-  var txtCounter = document.getElementById('txtCounter');
-  if (totalClicks < txtCounter.value) {
-    var clickedElement = event.target;
-    var clickedElementId = clickedElement.id;
-
-    if (
-      clickedElementId === 'left_img' ||
-      clickedElementId === 'center_img' ||
-      clickedElementId === 'right_img'
-    ) {
-      totalClicks++;
-
-      if (clickedElementId === 'left_img') {
-        currentLeftImage.numberOfClicks = Number(
-          localStorage.getItem(currentLeftImage.name)
-        );
-        currentLeftImage.numberOfClicks += 1;
-        localStorage.setItem(
-          currentLeftImage.name,
-          currentLeftImage.numberOfClicks
-        );
+  if( Product.counter < clickCounter ) {
+    const clickedElement = event.target;
+    if( clickedElement.id === 'firstPic' || clickedElement.id === 'secondPic' || clickedElement.id === 'thirdPic' ) {
+      if( clickedElement.id === 'firstPic' ) {
+        Product.all[leftPIndex].clicks++;
       }
 
-      if (clickedElementId === 'center_img') {
-        currentcenterImage.numberOfClicks = Number(
-          localStorage.getItem(currentcenterImage.name)
-        );
-        currentcenterImage.numberOfClicks += 1;
-        localStorage.setItem(
-          currentcenterImage.name,
-          currentcenterImage.numberOfClicks
-        );
+      if( clickedElement.id === 'secondPic' ) {
+        Product.all[midPIndex].clicks++;
+      }
+      if( clickedElement.id === 'thirdPic' ){
+        Product.all[lastPIndex].clicks++;
       }
 
-      if (clickedElementId === 'right_img') {
-        currentRightImage.numberOfClicks = Number(
-          localStorage.getItem(currentRightImage.name)
-        );
-        currentRightImage.numberOfClicks += 1;
-        localStorage.setItem(
-          currentRightImage.name,
-          currentRightImage.numberOfClicks
-        );
-      }
+      Product.counter++;
+      renderNewProduct();
 
-      pickImages();
+
     }
-  } else {
-    localStorage.setItem('Products', JSON.stringify(allProduct));
-    console.log(JSON.parse(localStorage.getItem('Products')));
+  }removeEventListener( 'click',handelClick );
 
-    allProduct = JSON.parse(localStorage.getItem('Products'));
-
-    productSection.removeEventListener('click', handleClick);
-    drawChart();
-  }
+  button.addEventListener( 'click',handelButton );
 }
 
-function drawChart() {
-  var allClicks = [];
-  var allShown = [];
+function handelButton( ){
+  const parentElement = document.getElementById( 'ol' );
 
-  for (var i = 0; i < allProduct.length; i++) {
-    allClicks.push(allProduct[i].numberOfClicks);
+  for( let i = 0;i < Product.all.length;i++ ){
+    const li = document.createElement( 'li' );
+    parentElement.appendChild( li );
+    li.textContent = `${Product.all[i].name} is clicked ${Product.all[i].clicks} and shown ${Product.all[i].shown}`;
   }
 
-  for (var x = 0; x < allProduct.length; x++) {
-    allShown.push(allProduct[x].timeShown);
+  renderChart();
+
+  button.removeEventListener( 'click',handelButton );
+  button.innerText = 'reset';
+  button.onclick = function(){
+    location.reload();
+  };
+}
+
+
+firstPic.addEventListener( 'click',handelClick );
+secondPic.addEventListener( 'click',handelClick );
+thirdPic.addEventListener( 'click',handelClick );
+
+
+function randomNumber( min, max ) {
+
+  let index2 = Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+  for( let i = 0;i < indexs.length;i++ ){
+    if ( index2 === indexs[i] ){
+      index2 = Math.floor( Math.random() * ( max - min + 1 ) ) + min;
+    }
+  }return( index2 );
+
+}
+
+
+
+
+
+renderNewProduct();
+
+function renderChart() {
+
+  let nameArray = [];
+  let clicksArray = [];
+  let shownArray = [];
+  for( let i = 0; i < Product.all.length; i++ ) {
+    nameArray.push( Product.all[i].name );
+    clicksArray.push( Product.all[i].clicks );
+    shownArray.push( Product.all[i].shown );
+
   }
 
-  var ctx = document.getElementById('myChart');
-  var myChart = new Chart(ctx, {
+  let ctx = document.getElementById( 'myChart' ).getContext( '2d' );
+  new Chart( ctx, {
     type: 'bar',
     data: {
-      labels: productName,
+      labels: nameArray,
       datasets: [
         {
-          label: '# of Clicks',
-          data: allClicks,
-          backgroundColor: '#a0c1b8',
-          borderColor: '#f4ebc1',
-          borderWidth: 1,
+          label: '# of Votes',
+          data: clicksArray,
+          backgroundColor: 'rgba( 0, 0, 0, 0.8 )',
+          borderColor: '#000000',
+          borderWidth: 3
         },
         {
-          label: '# of Shows',
-          data: allShown,
-          backgroundColor: '#709fb0',
-          borderColor: '#f4ebc1',
-          borderWidth: 1,
-        },
-      ],
+          label: '# of shown',
+          data: shownArray,
+          backgroundColor:'red',
+          borderColor: '#000000',
+          borderWidth: 3
+        }
+      ]
+
     },
     options: {
       scales: {
-        yAxes: [
-          {
-            ticks: {
-              beginAtZero: true,
-              precision: 0,
-            },
-          },
-        ],
-      },
-    },
-  });
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  } );
 }
